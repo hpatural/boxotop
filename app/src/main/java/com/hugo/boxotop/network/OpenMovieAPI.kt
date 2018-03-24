@@ -3,17 +3,18 @@ package com.hugo.boxotop.network
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * Created by hpatural on 24/03/2018.
  */
 interface OpenMovieAPI {
-    @GET("")
+    @GET(".")
     fun getFilms(
-            @Path("t") title: String) : Call<ResponseBody>
+            @Query("t") title: String,
+            @Query("apikey") apiKey: String) : Call<ResponseBody>
 
-    @GET("")
+    @GET(".")
     fun getFilmById(
-            @Path("i") id: String) : Call<ResponseBody>
+            @Query("i") id: String) : Call<ResponseBody>
 }

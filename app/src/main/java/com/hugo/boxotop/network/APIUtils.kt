@@ -6,9 +6,9 @@ package com.hugo.boxotop.network
 class APIUtils {
 
     companion object {
-        val BASE_URL = "http://optc-api.ptc-ophone.com/api/v1/"
+        val BASE_URL = "http://www.omdbapi.com"
 
-        fun getZirconAPI(): OpenMovieAPI {
+        fun getOpenMovieAPI(): OpenMovieAPI {
             return RetrofitClient.getClient(BASE_URL).create(OpenMovieAPI::class.java)
         }
     }
