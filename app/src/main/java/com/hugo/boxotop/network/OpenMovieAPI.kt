@@ -1,5 +1,7 @@
 package com.hugo.boxotop.network
 
+import com.hugo.boxotop.model.Model
+import io.reactivex.Observable
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
@@ -10,11 +12,15 @@ import retrofit2.http.Query
  */
 interface OpenMovieAPI {
     @GET(".")
-    fun getFilms(
-            @Query("t") title: String,
-            @Query("apikey") apiKey: String) : Call<ResponseBody>
+    fun getMovies(
+            @Query("t") title: String) : Call<ResponseBody>
 
     @GET(".")
-    fun getFilmById(
+    fun getMovieById(
             @Query("i") id: String) : Call<ResponseBody>
+
+    @GET(".")
+    fun searchMovies(
+            @Query("s") id: String,
+            @Query("page") page: Int?) : Observable<Model.SearchResult>
 }

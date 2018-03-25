@@ -2,28 +2,44 @@ package com.hugo.boxotop.ihm
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
 import com.hugo.boxotop.network.APIUtils
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by hpatural on 24/03/2018.
  */
-class MainActivity : AppCompatActivity(), Callback<ResponseBody> {
-    override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
-        println("failure") //To change body of created functions use File | Settings | File Templates.
-    }
+class MainActivity : AppCompatActivity() {
+    private var disposable: Disposable? = null
+    private val openMovieAPI = APIUtils.getOpenMovieAPI()
 
-    override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
-        println("ok good") //To change body of created functions use File | Settings | File Templates.
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        beginSearch("Batman")
 
-        APIUtils.getOpenMovieAPI().getFilms("test", "feaf59e0").enqueue(this)
     }
+
+    private fun beginSearch(searchString: String) {
+        disposable = openMovieAPI.searchMovies(searchString, null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { result ->
+                            print(result)
+                        },
+                        { error ->
+                            Toast.makeText(this, error.message, Toast.LENGTH_SHORT).show()
+                        }
+                )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        disposable?.dispose()
+    }
+
 
 }
