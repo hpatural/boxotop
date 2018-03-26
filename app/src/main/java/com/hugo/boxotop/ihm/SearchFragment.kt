@@ -1,9 +1,7 @@
 package com.hugo.boxotop.ihm
 
 import android.app.Fragment
-import android.app.SearchManager
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -25,10 +23,10 @@ import kotlinx.android.synthetic.main.fragment_search.*
  */
 class SearchFragment: Fragment() {
 
-
     var disposable: Disposable? = null
     val openMovieAPI = APIUtils.getOpenMovieAPI()
     var movies = ArrayList<Movie>()
+
     lateinit var movieAdapter: MovieAdapter
     lateinit var mListener : IFragmentListener
 
@@ -41,6 +39,7 @@ class SearchFragment: Fragment() {
         }
     }
 
+    //Attach the fragment listener interface
     override fun onAttach(activity: Context?) {
         super.onAttach(activity)
 

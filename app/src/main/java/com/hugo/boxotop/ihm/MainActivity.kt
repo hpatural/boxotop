@@ -22,13 +22,12 @@ class MainActivity : AppCompatActivity(), IFragmentListener, SearchView.OnQueryT
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
-        // Note that the Toolbar defined in the layout has the id "my_toolbar"
+
+        //Set the toolbar with search bar
         setSupportActionBar(toolbar)
 
-
+        //Init the current fragment and display it in the container
         currentFragment = SearchFragment.newInstance()
-
-
         fragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, currentFragment, SearchFragment.TAG)
                 .commitAllowingStateLoss()
@@ -36,11 +35,7 @@ class MainActivity : AppCompatActivity(), IFragmentListener, SearchView.OnQueryT
     }
 
 
-
-    override fun onPause() {
-        super.onPause()
-    }
-
+    //Init the menu with search bar
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.options_menu, menu)
@@ -53,12 +48,11 @@ class MainActivity : AppCompatActivity(), IFragmentListener, SearchView.OnQueryT
         searchView.setOnQueryTextListener(this)
         searchView.setSubmitButtonEnabled(true)
 
-
-
         return true
     }
 
     override fun onQueryTextSubmit(p0: String?): Boolean {
+        //On query submit we launch search to API
         if (currentFragment is SearchFragment && p0 != null) {
             (currentFragment as SearchFragment).searchSubmit(p0)
         }
@@ -66,6 +60,7 @@ class MainActivity : AppCompatActivity(), IFragmentListener, SearchView.OnQueryT
     }
 
     override fun onQueryTextChange(p0: String?): Boolean {
+        //Here we could do auto-completion
         return true
     }
 
