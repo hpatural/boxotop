@@ -4,13 +4,17 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import com.hugo.boxotop.R
 import com.hugo.boxotop.inflate
+import com.hugo.boxotop.model.Movie
+import com.hugo.boxotop.utils.ImageUtils
 
 /**
  * Created by hpatural on 26/03/2018.
  */
-class MovieAdapter (val context: Context) : RecyclerView.Adapter<MovieAdapter.MovieHolder>(), View.OnClickListener {
+class MovieAdapter (val context: Context, var movies: ArrayList<Movie>) : RecyclerView.Adapter<MovieAdapter.MovieHolder>(), View.OnClickListener {
 
     lateinit var mRecyclerView: RecyclerView
 
@@ -21,6 +25,13 @@ class MovieAdapter (val context: Context) : RecyclerView.Adapter<MovieAdapter.Mo
     }
 
     override fun onBindViewHolder(holder: MovieHolder?, position: Int) {
+        val movie = movies.get(position)
+        if (holder != null) {
+            holder.title.text = movie.Title
+            if (movie.Poster != null) {
+                ImageUtils.loadImage(context, holder.poster, movie.Poster!!)
+            }
+        }
 
     }
 
@@ -31,7 +42,7 @@ class MovieAdapter (val context: Context) : RecyclerView.Adapter<MovieAdapter.Mo
     }
 
     override fun getItemCount(): Int {
-        return 2
+        return movies.size
     }
 
     override fun onClick(view: View?) {
@@ -39,9 +50,11 @@ class MovieAdapter (val context: Context) : RecyclerView.Adapter<MovieAdapter.Mo
     }
 
     class MovieHolder(row: View?): RecyclerView.ViewHolder(row) {
-
+        val title: TextView
+        val poster: ImageView
         init {
-
+            this.title = row?.findViewById(R.id.movieTitle)!!
+            this.poster = row?.findViewById(R.id.moviePoster)!!
 
         }
     }
