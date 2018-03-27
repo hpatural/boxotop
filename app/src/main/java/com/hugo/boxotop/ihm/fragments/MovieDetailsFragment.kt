@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.fragment_movie_details.*
 class MovieDetailsFragment: AbstractFragment() {
 
 
+
     lateinit var movie: Movie
 
     companion object {
@@ -51,7 +52,8 @@ class MovieDetailsFragment: AbstractFragment() {
         return false
     }
 
-    override fun showBackButton() {
-        mListener.onShowBackButton(true)
+    override fun showToolbar() {
+        mListener.onShowToolbar(true, false)
     }
+
 }

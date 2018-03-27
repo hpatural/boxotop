@@ -19,6 +19,8 @@ import kotlinx.android.synthetic.main.main_activity.*
 class MainActivity : AppCompatActivity(), IFragmentListener, SearchView.OnQueryTextListener  {
 
 
+    lateinit var menu: Menu
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
@@ -41,11 +43,14 @@ class MainActivity : AppCompatActivity(), IFragmentListener, SearchView.OnQueryT
 
         // Associate searchable configuration with the SearchView
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
+
         val searchView = menu.findItem(R.id.search).actionView as SearchView
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(componentName))
         searchView.setOnQueryTextListener(this)
         searchView.setSubmitButtonEnabled(true)
+
+        this.menu = menu
 
         return true
     }
@@ -71,11 +76,6 @@ class MainActivity : AppCompatActivity(), IFragmentListener, SearchView.OnQueryT
                 .commit()
     }
 
-    override fun onShowBackButton(boolean: Boolean) {
-        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(boolean);
-        getSupportActionBar()!!.setDisplayShowHomeEnabled(boolean);
-    }
-
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true
@@ -90,5 +90,12 @@ class MainActivity : AppCompatActivity(), IFragmentListener, SearchView.OnQueryT
         }
     }
 
+    override fun onShowToolbar(showBackButton: Boolean, showSearchBar: Boolean) {
+        menu.findItem(R.id.search).setVisible(showSearchBar)
+
+        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(showBackButton)
+        getSupportActionBar()!!.setDisplayShowHomeEnabled(showBackButton)
+
+    }
 
 }

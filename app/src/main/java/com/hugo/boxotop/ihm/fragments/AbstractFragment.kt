@@ -15,7 +15,7 @@ abstract class AbstractFragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showBackButton()
+        showToolbar()
     }
 
     //Attach the fragment listener interface
@@ -29,5 +29,5 @@ abstract class AbstractFragment : Fragment() {
         }
     }
 
-    abstract fun showBackButton()
+    abstract fun showToolbar()
 }

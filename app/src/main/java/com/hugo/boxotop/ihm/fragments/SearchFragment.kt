@@ -85,8 +85,8 @@ class SearchFragment: AbstractFragment() {
         disposable?.dispose()
     }
 
-    override fun showBackButton() {
-        mListener.onShowBackButton(false)
+    override fun showToolbar() {
+        mListener.onShowToolbar(false, true)
     }
 
 }

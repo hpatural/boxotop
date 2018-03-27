@@ -8,5 +8,5 @@ import android.app.Fragment
 interface IFragmentListener {
     fun onChangeFragment(fragment: Fragment)
 
-    fun onShowBackButton(boolean: Boolean)
+    fun onShowToolbar(showBackButton: Boolean, showSearchBar: Boolean)
 }
