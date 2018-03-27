@@ -1,4 +1,4 @@
-package com.hugo.boxotop.ihm
+package com.hugo.boxotop.ihm.adapters
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
@@ -14,7 +14,7 @@ import com.hugo.boxotop.utils.ImageUtils
 /**
  * Created by hpatural on 26/03/2018.
  */
-class MovieAdapter (val context: Context, var movies: ArrayList<Movie>) : RecyclerView.Adapter<MovieAdapter.MovieHolder>(), View.OnClickListener {
+class MovieAdapter (val context: Context, var movies: ArrayList<Movie>, val clickListener: View.OnClickListener) : RecyclerView.Adapter<MovieAdapter.MovieHolder>() {
 
     lateinit var mRecyclerView: RecyclerView
 
@@ -31,6 +31,7 @@ class MovieAdapter (val context: Context, var movies: ArrayList<Movie>) : Recycl
             if (movie.Poster != null) {
                 ImageUtils.loadImage(context, holder.poster, movie.Poster!!)
             }
+            holder.itemView.setOnClickListener(clickListener)
         }
 
     }
@@ -45,9 +46,6 @@ class MovieAdapter (val context: Context, var movies: ArrayList<Movie>) : Recycl
         return movies.size
     }
 
-    override fun onClick(view: View?) {
-        val itemPosition = mRecyclerView.getChildLayoutPosition(view)
-    }
 
     class MovieHolder(row: View?): RecyclerView.ViewHolder(row) {
         val title: TextView
@@ -55,7 +53,6 @@ class MovieAdapter (val context: Context, var movies: ArrayList<Movie>) : Recycl
         init {
             this.title = row?.findViewById(R.id.movieTitle)!!
             this.poster = row?.findViewById(R.id.moviePoster)!!
-
         }
     }
 }

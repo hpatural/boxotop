@@ -1,4 +1,4 @@
-package com.hugo.boxotop.ihm
+package com.hugo.boxotop.ihm.activities
 
 import android.app.Fragment
 import android.app.SearchManager
@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.widget.SearchView
 import com.hugo.boxotop.R
+import com.hugo.boxotop.ihm.fragments.SearchFragment
 import com.hugo.boxotop.interfaces.IFragmentListener
 import kotlinx.android.synthetic.main.main_activity.*
 
@@ -17,7 +18,6 @@ import kotlinx.android.synthetic.main.main_activity.*
  */
 class MainActivity : AppCompatActivity(), IFragmentListener, SearchView.OnQueryTextListener  {
 
-    lateinit var currentFragment: Fragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,9 +27,8 @@ class MainActivity : AppCompatActivity(), IFragmentListener, SearchView.OnQueryT
         setSupportActionBar(toolbar)
 
         //Init the current fragment and display it in the container
-        currentFragment = SearchFragment.newInstance()
         fragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, currentFragment, SearchFragment.TAG)
+                .replace(R.id.fragmentContainer, SearchFragment.newInstance(), SearchFragment.TAG)
                 .commitAllowingStateLoss()
 
     }
@@ -52,9 +51,10 @@ class MainActivity : AppCompatActivity(), IFragmentListener, SearchView.OnQueryT
     }
 
     override fun onQueryTextSubmit(p0: String?): Boolean {
+        val currentFragment = getFragmentManager().findFragmentById(R.id.fragmentContainer);
         //On query submit we launch search to API
         if (currentFragment is SearchFragment && p0 != null) {
-            (currentFragment as SearchFragment).searchSubmit(p0)
+            currentFragment.searchSubmit(p0)
         }
         return true
     }
@@ -65,10 +65,30 @@ class MainActivity : AppCompatActivity(), IFragmentListener, SearchView.OnQueryT
     }
 
     override fun onChangeFragment(fragment: Fragment) {
-        print("change fragment todo")
-        currentFragment = fragment
+        fragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .addToBackStack(fragment.tag)
+                .commit()
     }
 
+    override fun onShowBackButton(boolean: Boolean) {
+        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(boolean);
+        getSupportActionBar()!!.setDisplayShowHomeEnabled(boolean);
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
+    override fun onBackPressed() {
+        if (fragmentManager.backStackEntryCount > 0) {
+            fragmentManager.popBackStackImmediate()
+            //currentFragment = fragmentManager
+        } else {
+            finish()
+        }
+    }
 
 
 }

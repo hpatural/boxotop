@@ -1,7 +1,5 @@
-package com.hugo.boxotop.ihm
+package com.hugo.boxotop.ihm.fragments
 
-import android.app.Fragment
-import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
@@ -10,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.hugo.boxotop.R
-import com.hugo.boxotop.interfaces.IFragmentListener
+import com.hugo.boxotop.ihm.adapters.MovieAdapter
 import com.hugo.boxotop.model.Movie
 import com.hugo.boxotop.network.APIUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,14 +19,14 @@ import kotlinx.android.synthetic.main.fragment_search.*
 /**
  * Created by hpatural on 26/03/2018.
  */
-class SearchFragment: Fragment() {
+class SearchFragment: AbstractFragment() {
+
 
     var disposable: Disposable? = null
     val openMovieAPI = APIUtils.getOpenMovieAPI()
     var movies = ArrayList<Movie>()
 
     lateinit var movieAdapter: MovieAdapter
-    lateinit var mListener : IFragmentListener
 
     companion object {
         val TAG = SearchFragment.javaClass.canonicalName
@@ -39,16 +37,6 @@ class SearchFragment: Fragment() {
         }
     }
 
-    //Attach the fragment listener interface
-    override fun onAttach(activity: Context?) {
-        super.onAttach(activity)
-
-        if (activity is IFragmentListener) {
-            mListener = activity
-        } else {
-            throw RuntimeException(activity!!.toString() + "must implement IFragmentInteractionListener")
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.fragment_search, container, false)
@@ -56,7 +44,10 @@ class SearchFragment: Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        this.movieAdapter = MovieAdapter(activity, movies)
+        this.movieAdapter = MovieAdapter(activity, movies, View.OnClickListener {
+            val itemPosition = searchResultRV.getChildLayoutPosition(it)
+            mListener.onChangeFragment(MovieDetailsFragment.newInstance(movies.get(itemPosition)))
+        })
         searchResultRV.adapter = movieAdapter
         var linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         searchResultRV.layoutManager = linearLayoutManager
@@ -78,10 +69,8 @@ class SearchFragment: Fragment() {
                             if (result.Search != null) {
                                 movies = result.Search!!
 
-                                if (this.movieAdapter != null) {
-                                    this.movieAdapter.movies = movies
-                                    this.movieAdapter.notifyDataSetChanged()
-                                }
+                                this.movieAdapter.movies = movies
+                                this.movieAdapter.notifyDataSetChanged()
                             }
 
                         },
@@ -95,4 +84,9 @@ class SearchFragment: Fragment() {
         super.onPause()
         disposable?.dispose()
     }
+
+    override fun showBackButton() {
+        mListener.onShowBackButton(false)
+    }
+
 }

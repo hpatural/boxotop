@@ -7,4 +7,6 @@ import android.app.Fragment
  */
 interface IFragmentListener {
     fun onChangeFragment(fragment: Fragment)
+
+    fun onShowBackButton(boolean: Boolean)
 }
