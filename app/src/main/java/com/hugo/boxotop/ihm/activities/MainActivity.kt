@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.main_activity.*
 class MainActivity : AppCompatActivity(), IFragmentListener, SearchView.OnQueryTextListener  {
 
 
-    lateinit var menu: Menu
+    var menu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,11 +91,12 @@ class MainActivity : AppCompatActivity(), IFragmentListener, SearchView.OnQueryT
     }
 
     override fun onShowToolbar(showBackButton: Boolean, showSearchBar: Boolean) {
-        menu.findItem(R.id.search).setVisible(showSearchBar)
+        if (menu != null) {
+            menu!!.findItem(R.id.search).setVisible(showSearchBar)
+        }
 
         getSupportActionBar()!!.setDisplayHomeAsUpEnabled(showBackButton)
         getSupportActionBar()!!.setDisplayShowHomeEnabled(showBackButton)
-
     }
 
 }
