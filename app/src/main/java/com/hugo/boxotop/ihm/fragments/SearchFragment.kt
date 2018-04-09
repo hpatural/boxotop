@@ -28,7 +28,7 @@ class SearchFragment: AbstractFragment() {
     var moviesPage = 1
     var moviesTotalResult = -1
     var currentSearchString = ""
-    var moviesLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+    lateinit var moviesLayoutManager: LinearLayoutManager
 
 
     lateinit var movieAdapter: MovieAdapter
@@ -74,8 +74,12 @@ class SearchFragment: AbstractFragment() {
         super.onViewCreated(view, savedInstanceState)
         this.movieAdapter = MovieAdapter(activity, movies, View.OnClickListener {
             val itemPosition = searchResultRV.getChildLayoutPosition(it)
-            mListener.onChangeFragment(MovieDetailsFragment.newInstance(movies.get(itemPosition)))
+
+            getMovieById(movies.get(itemPosition).imdbID!!)
         })
+
+        moviesLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+
         searchResultRV.adapter = movieAdapter
         searchResultRV.layoutManager = moviesLayoutManager
         val dividerItemDecoration = DividerItemDecoration(searchResultRV.getContext(),
@@ -93,6 +97,8 @@ class SearchFragment: AbstractFragment() {
         isLoading = true
 
         if (newSearch) {
+            movies = ArrayList()
+            moviesTotalResult = -1
             moviesPage = 1
             currentSearchString = searchString
         }
@@ -108,6 +114,24 @@ class SearchFragment: AbstractFragment() {
                                 moviesPage++
                                 this.movieAdapter.movies = movies
                                 this.movieAdapter.notifyDataSetChanged()
+                            }
+
+                        },
+                        { error ->
+                            isLoading = false
+                            Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
+                        }
+                )
+    }
+
+    private fun getMovieById(imdbID: String) {
+        disposable = openMovieAPI.getMovieById(imdbID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { result ->
+                            if (result != null) {
+                                mListener.onChangeFragment(MovieDetailsFragment.newInstance(result));
                             }
 
                         },

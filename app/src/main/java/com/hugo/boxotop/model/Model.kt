@@ -7,4 +7,5 @@ object Model {
     data class SearchResult(var Search: ArrayList<Movie>?,
                                   var totalResults: String?,
                                   var Response: String)
+
 }
